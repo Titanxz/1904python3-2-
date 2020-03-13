@@ -22,6 +22,8 @@ class Article(models.Model):
 class User(models.Model):
     openid = models.CharField(max_length=64, unique=True)
     nickname = models.CharField(max_length=64)
+    # coll = models.CharField(max_length=8, default='测试')
+    menu = models.ManyToManyField(Article)  # 不能反映到表结构中
     # nickname = models.CharField(max_length=64, db_index=True)
     # manufacturer = models.ForeignKey(
         #     'Article',

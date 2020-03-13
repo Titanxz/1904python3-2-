@@ -7,8 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('blog', '0004_auto_20200303_1550'),
-    ]
-
+    ]  # 依赖那个迁移文件
     operations = [
         migrations.AddIndex(
             model_name='user',

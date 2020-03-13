@@ -161,3 +161,12 @@ def trunc_function():
         print('date:', article['publish_day'], ', publish num:', article['publish_num'])
 
 
+# 懒加载
+def lazy_load():
+    for user in User.objects.all():
+        print(user.menu.all())
+
+# 预加载
+def pre_load():
+    for user in User.objects.prefetch_related('menu'):
+        print(user.menu.all())
