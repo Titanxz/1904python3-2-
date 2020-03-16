@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'mymiddleware.testmiddleware.TestMiddle',
+    'mymiddleware.testmiddleware.Statistics',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -163,9 +164,13 @@ LOGGING = {
             'format': '%(asctime)s [%(threadName)s: %(thread)d]'  # 时间/线程名字/线程ID
                       '%(pathname)s:%(funcName)s:%(lineno)d %(levelname)s - %(message)s'
 
+        },
+        'statistics': {
+            'format': '%(message)s'
         }
 
     },
+
     # 过滤器--->匹配过滤
     'filters': {
         'xxx': {
@@ -179,7 +184,7 @@ LOGGING = {
         'console_handler': {
             'level': 'INFO',
             'class': 'logging.StreamHandler',
-            'formatter': 'standard'
+            'formatter': 'statistics'
         },
         # 输出文件
         'file_handler': {
@@ -191,6 +196,16 @@ LOGGING = {
             'backupCount': 3,  # 备份数量
             'formatter': 'standard',
             'encoding': 'utf8'
+        },
+        'statistics_handler': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            # todo maybe loging file no exist
+            'filename': os.path.join(BASE_DIR, 'statistics.log'),
+            'maxBytes': 100 * 1024 * 1024,  # 文件最大100M
+            'backupCount': 3,  # 备份数量
+            'formatter': 'statistics',
+            'encoding': 'utf8'
         }
     },
     # 生成一个实例日志 django
@@ -200,7 +215,14 @@ LOGGING = {
             'filters': ['xxx'],
             'level': 'DEBUG'
 
+        },
+        'statistics': {
+            'handlers': ['console_handler', 'statistics_handler'],
+            'filters': ['xxx'],
+            'level': 'INFO'
+
         }
+
     }
 }
 
@@ -224,11 +246,13 @@ CACHES = {
         'LOCATION': 'backend-cache'
     }
 }
-# 定时
+# 定时任务
 CRONJOBS = [
     ('*/2 * * * *', 'cron.jobs.demo'), # cron.jobs.demo是一个函数dosomething
-    ('*/2 * * * *', 'echo "xxxxx">/dev/null'),
-    ('*/3 * * * *', '/bin/ls')
+    ('0 0 * * *', 'ops.jobs.send_mail')  # 每天发送邮件
+    # ('*/2 * * * *', 'echo "xxxxx">/dev/null'),
+    # ('*/3 * * * *', '/bin/ls'),
+
 ]
 
 
